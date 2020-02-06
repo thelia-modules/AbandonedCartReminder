@@ -39,9 +39,10 @@ class AbandonedCartReminder extends BaseModule
         $database = new Database($con);
         $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
 
-        self::setConfigValue(self::REMINDER_TIME_1, 2);
-        self::setConfigValue(self::REMINDER_TIME_2, 10);
-        self::setConfigValue(self::PROMO_CODE_REMINDER, null);
+        if (null === self::getConfigValue(self::REMINDER_TIME_1))
+            self::setConfigValue(self::REMINDER_TIME_1, 2);
+        if (null === self::getConfigValue(self::REMINDER_TIME_2))
+            self::setConfigValue(self::REMINDER_TIME_2, 10);
 
         if (null === MessageQuery::create()->findOneByName(self::REMINDER_MESSAGE_1)) {
 
