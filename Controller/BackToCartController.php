@@ -22,7 +22,7 @@ use Thelia\Core\Event\TheliaEvents;
 use Thelia\Model\CustomerQuery;
 use Thelia\Tools\URL;
 
-class BackToCart extends BaseFrontController
+class BackToCartController extends BaseFrontController
 {
     public function loadCart($token)
     {

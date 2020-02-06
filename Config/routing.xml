@@ -10,10 +10,10 @@
     </route>
 
     <route id="AbandonedCart.cart" path="/back-to-cart/{token}" methods="get">
-        <default key="_controller">AbandonedCartReminder\Controller\BackToCart::loadCart</default>
+        <default key="_controller">AbandonedCartReminder\Controller\BackToCartController::loadCart</default>
     </route>
 
     <route id="AbandonedCart.cron" path="/admin/AbandonedCartReminder/cron">
-        <default key="_controller">AbandonedCartReminder\Controller\ExamineAbandonedCart::examine</default>
+        <default key="_controller">AbandonedCartReminder\Controller\ExamineAbandonedCartController::examine</default>
     </route>
 </routes>

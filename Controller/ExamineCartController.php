@@ -20,7 +20,7 @@ use Thelia\Core\Event\DefaultActionEvent;
 use Thelia\Core\HttpFoundation\Response;
 use Thelia\Log\Tlog;
 
-class ExamineCart extends BaseFrontController
+class ExamineCartController extends BaseFrontController
 {
     public function examine()
     {
