@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-md-12 general-block-decorator">
+        <div class="row">
+            <div class="col-md-12 title title-without-tabs">
+                {intl d='abandonedcartreminder' l="Configuration des paniers abandonnés"}
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="row">
+                <div class="col-md-12">
+                    {form name="AbandonedCart.configuration.form"}
+                        
+                        <form action="{url path='/admin/module/AbandonedCartReminder/configure'}" method="post">
+                            {form_hidden_fields form=$form}
+                            
+                            {include file = "includes/inner-form-toolbar.html"
+                                hide_flags = true
+                                page_url   = "{url path='/admin/module/AbandonedCartReminder'}"
+                                close_url  = "{url path='/admin/modules'}"
+                            }
+                            
+                            {if $form_error}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger">{$form_error_message}</div>
+                                    </div>
+                                </div>
+                            {/if}
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {render_form_field form=$form field='delai_rappel_1_en_minutes' value=$delai_rappel_1_en_minutes}
+                                    {render_form_field form=$form field='delai_rappel_2_en_minutes' value=$delai_rappel_2_en_minutes}
+                                    {render_form_field form=$form field='code_promo_rappel_2' value=$code_promo_rappel_2}
+                                </div>
+                            </div>
+                        </form>
+                    {/form}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

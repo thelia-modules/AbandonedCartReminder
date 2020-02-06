@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+
+    <route id="AbandonedCart.admin.configure" path="/admin/module/AbandonedCartReminder/configure" methods="post">
+        <default key="_controller">AbandonedCartReminder\Controller\ConfigurationController::configure</default>
+    </route>
+
+    <route id="AbandonedCart.cart" path="/back-to-cart/{token}" methods="get">
+        <default key="_controller">AbandonedCartReminder\Controller\BackToCart::loadCart</default>
+    </route>
+
+    <route id="AbandonedCart.cron" path="/admin/AbandonedCartReminder/cron">
+        <default key="_controller">AbandonedCartReminder\Controller\ExamineAbandonedCart::examine</default>
+    </route>
+</routes>
