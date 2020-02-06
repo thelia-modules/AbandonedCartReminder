@@ -26,14 +26,14 @@ class BackToCartController extends BaseFrontController
 {
     public function loadCart($token)
     {
-        if (null !== $pa = AbandonedCartQuery::create()->findOneByLoginToken($token)) {
+        if (null !== $abandonedCart = AbandonedCartQuery::create()->findOneByLoginToken($token)) {
             // If there's a customer, connect it.
-            if (null !== $customer = CustomerQuery::create()->findOneByEmail($pa->getEmailClient())) {
+            if (null !== $customer = CustomerQuery::create()->findOneByEmail($abandonedCart->getEmailClient())) {
                 $this->dispatch(TheliaEvents::CUSTOMER_LOGIN, new CustomerLoginEvent($customer));
             }
 
             // Restores the cart.
-            $this->getSession()->setSessionCart($pa->getCart());
+            $this->getSession()->setSessionCart($abandonedCart->getCart());
 
             // Send the customer to his cart page.
             return $this->generateRedirect(URL::getInstance()->absoluteUrl('/cart'));
