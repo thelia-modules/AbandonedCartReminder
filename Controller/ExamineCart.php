@@ -31,12 +31,12 @@ class ExamineCart extends BaseFrontController
             );
 
         } catch (\Exception $ex) {
-            Tlog::getInstance()->error("Echec de l'examen des paniers abandonnés :" . $ex->getMessage());
+            Tlog::getInstance()->error("Error, can't examine abandoned carts :" . $ex->getMessage());
             Tlog::getInstance()->error($ex);
 
             throw $ex;
         }
 
-        return new Response("Examen des paniers abandonnés terminé.");
+        return new Response("Abandoned carts check finished.");
     }
 }

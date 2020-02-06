@@ -26,31 +26,31 @@ class AbandonedCartReminder extends BaseModule
     /** @var string */
     const DOMAIN_NAME = 'abandonedcartreminder';
 
-    const VAR_DELAI_RAPPEL_1 = 'delai_rappel_1_en_minutes';
-    const VAR_DELAI_RAPPEL_2 = 'delai_rappel_2_en_minutes';
-    const VAR_CODE_PROMO_RAPPEL_2 = 'code_promo_rappel_2';
+    const REMINDER_TIME_1 = 'first_reminder_in_minutes';
+    const REMINDER_TIME_2 = 'second_reminder_in_minutes';
+    const PROMO_CODE_REMINDER = 'promotional_code_reminder';
 
-    const MESSAGE_RAPPEL_1 = 'panier-abandonnes-message-rappel-1';
-    const MESSAGE_RAPPEL_2 = 'panier-abandonnes-message-rappel-2';
+    const REMINDER_MESSAGE_1 = 'abandoned-cart-reminder-message-1';
+    const REMINDER_MESSAGE_2 = 'abandoned-cart-reminder-message-2';
 
     public function postActivation(ConnectionInterface $con = null)
     {
         $database = new Database($con);
         $database->insertSql(null, [__DIR__ . '/Config/thelia.sql']);
 
-        self::setConfigValue(self::VAR_DELAI_RAPPEL_1, 2);
-        self::setConfigValue(self::VAR_DELAI_RAPPEL_2, 10);
-        self::setConfigValue(self::VAR_CODE_PROMO_RAPPEL_2, null);
+        self::setConfigValue(self::REMINDER_TIME_1, 2);
+        self::setConfigValue(self::REMINDER_TIME_2, 10);
+        self::setConfigValue(self::PROMO_CODE_REMINDER, null);
 
-        if (null === MessageQuery::create()->findOneByName(self::MESSAGE_RAPPEL_1)) {
+        if (null === MessageQuery::create()->findOneByName(self::REMINDER_MESSAGE_1)) {
 
             $message = new Message();
             $message
-                ->setName(self::MESSAGE_RAPPEL_1)
+                ->setName(self::REMINDER_MESSAGE_1)
                 ->setHtmlLayoutFileName('')
-                ->setHtmlTemplateFileName('mail-rappel-1.html')
+                ->setHtmlTemplateFileName('reminder-mail-1.html')
                 ->setTextLayoutFileName('')
-                ->setTextTemplateFileName('mail-rappel-1.txt');
+                ->setTextTemplateFileName('reminder-mail-1.txt');
 
             $languages = LangQuery::create()->find();
 
@@ -72,14 +72,14 @@ class AbandonedCartReminder extends BaseModule
             $message->save();
         }
 
-        if (null === MessageQuery::create()->findOneByName(self::MESSAGE_RAPPEL_2)) {
+        if (null === MessageQuery::create()->findOneByName(self::REMINDER_MESSAGE_2)) {
             $message = new Message();
             $message
-                ->setName(self::MESSAGE_RAPPEL_2)
+                ->setName(self::REMINDER_MESSAGE_2)
                 ->setHtmlLayoutFileName('')
-                ->setHtmlTemplateFileName('mail-rappel-2.html')
+                ->setHtmlTemplateFileName('reminder-mail-2.html')
                 ->setTextLayoutFileName('')
-                ->setTextTemplateFileName('mail-rappel-2.txt');
+                ->setTextTemplateFileName('reminder-mail-2.txt');
 
             $languages = LangQuery::create()->find();
 
@@ -90,11 +90,11 @@ class AbandonedCartReminder extends BaseModule
                 $message->setLocale($locale);
 
                 $message->setTitle(
-                    Translator::getInstance()->trans('Votre panier vous attend toujours !', [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans('Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
                 );
 
                 $message->setSubject(
-                    Translator::getInstance()->trans('Votre panier vous attend toujours !', [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans('Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
                 );
             }
 

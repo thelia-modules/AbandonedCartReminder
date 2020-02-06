@@ -6,10 +6,10 @@
 {block name="pre-header"}{/block}
 
 {* Subject  *}
-{block name="email-subject"}{intl l="Alors comme ça, vous êtes du genre à oublier votre panier ?" d="abandonedcartreminder"}{/block}
+{block name="email-subject"}{intl l="It seems that you forgot your cart !" d="abandonedcartreminder"}{/block}
 
 {* Title  *}
-{block name="email-title"}{intl l="Votre commande vous attend ! " d="abandonedcartreminder"}{/block}
+{block name="email-title"}{intl l="Your order is waiting for you !" d="abandonedcartreminder"}{/block}
 
 {* -- Declare assets directory, relative to template base directory --------- *}
 {declare_assets directory='assets'}
@@ -209,7 +209,7 @@
                                 <tr>
                                     <td colspan="999">
                                         <br>&nbsp;<br>
-                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l="RETOURNER À MON PANIER" d="abandonedcartreminder"}</a></p>
+                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='GO BACK TO MY CART' d="abandonedcartreminder"}</a></p>
                                     </td>
                                 </tr>
                             </table>

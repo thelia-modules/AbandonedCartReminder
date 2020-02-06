@@ -102,15 +102,15 @@ class ListenerManager implements EventSubscriberInterface
      */
     protected function storeCart(Cart $cart)
     {
-        // Si le panier n'est pas trop vieux, on le stocke
+        // If the cart isn't too old, we store it
         if ($this->isStorable($cart)) {
             if (null !== $data = $this->getCustomerEmailAndLocale()) {
-                // Supprimer tous les paniers relatifs à ce client
+                // Delete all carts linked to this customer
                 AbandonedCartQuery::create()
                     ->filterByEmailClient($data['email'], Criteria::LIKE)
                     ->delete();
 
-                // Enregistrer le nouveau panier.
+                // Store the new cart
                 (new AbandonedCart())
                     ->setCartId($cart->getId())
                     ->setEmailClient($data['email'])
@@ -149,12 +149,12 @@ class ListenerManager implements EventSubscriberInterface
     {
         $originalCart = $event->getOriginalCart();
 
-        // Supprimer le vieux panier
+        // Delete the old
         if (null !== $pa = AbandonedCartQuery::create()->findOneByCartId($originalCart->getId())) {
             $pa->delete();
         }
 
-        // Ne pas stocker un vieux panier qui serait dupliqué
+        // Do not store an old cart which could be duplicated
         if ($this->isStorable($originalCart)) {
             $this->storeCart($event->getDuplicatedCart());
         }
@@ -169,17 +169,17 @@ class ListenerManager implements EventSubscriberInterface
     protected function isStorable(Cart $cart)
     {
         if (! empty($cart) && $cart->getId() > 0 && $cart->countCartItems() > 0) {
-            $delaiSecondRappel = new \DateTime();
+            $timeSecondReminder = new \DateTime();
 
-            $delaiSecondRappel
+            $timeSecondReminder
                 ->add(
                     new \DateInterval(
-                        'PT' . AbandonedCartReminder::getConfigValue(AbandonedCartReminder::VAR_DELAI_RAPPEL_2) . 'M'
+                        'PT' . AbandonedCartReminder::getConfigValue(AbandonedCartReminder::REMINDER_TIME_2) . 'M'
                     )
                 );
 
-            // La panier est obsolete s'il existe depuis plus longtemps que le délai d'envoi du 2eme rappel.
-            return $cart->getCreatedAt() < $delaiSecondRappel;
+            // The cart is deprecated if it exists since longer than the time to send the second reminder.
+            return $cart->getCreatedAt() < $timeSecondReminder;
         }
 
         return false;
@@ -192,7 +192,7 @@ class ListenerManager implements EventSubscriberInterface
      */
     public function updateCart(CartEvent $event)
     {
-        // Mettre à jour le champ UpdatedAt
+        // Update UpdatedAt
         if ($this->isStorable($event->getCart())) {
             if (null !== $pa = AbandonedCartQuery::create()->findOneByCartId($event->getCart()->getId()))
                 $pa->setLastUpdate(new \DateTime())->save();
@@ -207,7 +207,7 @@ class ListenerManager implements EventSubscriberInterface
      */
     public function orderStatusUpdate(OrderEvent $event)
     {
-        // Si la commande est payée, supprimer le panier associé.
+        // If the order is paid, delete the linked cart.
         $order = $event->getOrder();
 
         if ($order->isPaid()) {
@@ -227,20 +227,20 @@ class ListenerManager implements EventSubscriberInterface
         Tlog::getInstance()->notice("Examen des paniers abandonnes");
 
         $this->sendReminder(
-            AbandonedCartReminder::VAR_DELAI_RAPPEL_1,
+            AbandonedCartReminder::REMINDER_TIME_1,
             AbandonedCart::RAPPEL_PAS_ENVOYE,
-            AbandonedCartReminder::MESSAGE_RAPPEL_1,
+            AbandonedCartReminder::REMINDER_MESSAGE_1,
             AbandonedCart::RAPPEL_1_ENVOYE
         );
 
         $this->sendReminder(
-            AbandonedCartReminder::VAR_DELAI_RAPPEL_2,
+            AbandonedCartReminder::REMINDER_TIME_2,
             AbandonedCart::RAPPEL_1_ENVOYE,
-            AbandonedCartReminder::MESSAGE_RAPPEL_2,
+            AbandonedCartReminder::REMINDER_MESSAGE_2,
             AbandonedCart::RAPPEL_2_ENVOYE
         );
 
-        // Supprimer les entrées auxquelles on a envoyé le 2 eme rappel
+        // Delete everyone who already got the second reminder
         AbandonedCartQuery::create()
             ->filterBystatus(AbandonedCart::RAPPEL_2_ENVOYE)
             ->delete()
@@ -260,40 +260,40 @@ class ListenerManager implements EventSubscriberInterface
         $delai = new \DateTime();
         $delai = $delai->sub(new \DateInterval('PT' . AbandonedCartReminder::getConfigValue($varDelai) . 'M'));
 
-        $AbandonedCarts = AbandonedCartQuery::create()
+        $abandonedCarts = AbandonedCartQuery::create()
             ->filterByStatus($filtreStatus)
             ->filterByLastUpdate($delai, Criteria::LESS_THAN)
             ->find();
 
-        /** @var AbandonedCart $AbandonedCart */
-        foreach ($AbandonedCarts as $AbandonedCart) {
+        /** @var AbandonedCart $abandonedCart */
+        foreach ($abandonedCarts as $abandonedCart) {
             // Vérifier que le cart n'est pas vide.
-            if ($AbandonedCart->getCart()->countCartItems() > 0) {
+            if ($abandonedCart->getCart()->countCartItems() > 0) {
                 try {
                     $this->mailer->sendEmailMessage(
                         $codeMessage,
                         [ConfigQuery::getStoreEmail() => ConfigQuery::getStoreName()],
-                        [$AbandonedCart->getEmailClient() => $AbandonedCart->getEmailClient()],
+                        [$abandonedCart->getEmailClient() => $abandonedCart->getEmailClient()],
                         [
-                            'cart_id' => $AbandonedCart->getCartId(),
-                            'login_token' => $AbandonedCart->getLoginToken(),
-                            'code_promo' => AbandonedCartReminder::getConfigValue(AbandonedCartReminder::VAR_CODE_PROMO_RAPPEL_2)
+                            'cart_id' => $abandonedCart->getCartId(),
+                            'login_token' => $abandonedCart->getLoginToken(),
+                            'code_promo' => AbandonedCartReminder::getConfigValue(AbandonedCartReminder::PROMO_CODE_REMINDER)
                         ],
-                        $AbandonedCart->getLocale()
+                        $abandonedCart->getLocale()
                     );
-                    Tlog::getInstance()->notice("Envoi du rappel no. " . $nouvelEtat . " au client " . $AbandonedCart->getEmailClient());
+                    Tlog::getInstance()->notice("Sending reminder number. " . $nouvelEtat . " to customer " . $abandonedCart->getEmailClient());
                 } catch (\Exception $ex) {
-                    Tlog::getInstance()->error("Echec de l'envoi du rappel no. " . $nouvelEtat . " au client " . $AbandonedCart->getEmailClient() . ". Raison:".$ex->getMessage());
+                    Tlog::getInstance()->error("Failed to send reminder number. " . $nouvelEtat . " to customer " . $abandonedCart->getEmailClient() . ". Reason:".$ex->getMessage());
                 }
 
-                $AbandonedCart->clearAllReferences();
+                $abandonedCart->clearAllReferences();
 
-                $AbandonedCart
+                $abandonedCart
                     ->setstatus($nouvelEtat)
                     ->save();
             } else {
-                // Supprimer ce panier obsolète
-                $AbandonedCart->delete();
+                // Delete this deprecated cart
+                $abandonedCart->delete();
             }
         }
     }

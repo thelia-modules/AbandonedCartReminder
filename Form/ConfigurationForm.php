@@ -27,7 +27,7 @@ class ConfigurationForm extends BaseForm
     {
         $locale = $this->getRequest()->getSession()->getLang()->getLocale();
 
-        $promoListe = [ '' => $this->translator->trans("Ne pas offrir de code promo", [], AbandonedCartReminder::DOMAIN_NAME) ];
+        $promoCodeList = [ '' => $this->translator->trans("Do not offer any promotional code", [], AbandonedCartReminder::DOMAIN_NAME) ];
 
         $coupons = CouponQuery::create()
             ->orderByCode()
@@ -36,12 +36,12 @@ class ConfigurationForm extends BaseForm
 
         /** @var Coupon $coupon */
         foreach ($coupons as $coupon) {
-            $promoListe[$coupon->getCode()] = $coupon->getCode() . ': ' . $coupon->setLocale($locale)->getTitle();
+            $promoCodeList[$coupon->getCode()] = $coupon->getCode() . ': ' . $coupon->setLocale($locale)->getTitle();
         }
 
         $this->formBuilder
             ->add(
-                AbandonedCartReminder::VAR_DELAI_RAPPEL_1,
+                AbandonedCartReminder::REMINDER_TIME_1,
                 NumberType::class,
                 [
                     "required" => true,
@@ -49,10 +49,10 @@ class ConfigurationForm extends BaseForm
                         new NotBlank(),
                         new GreaterThanOrEqual(array('value' => 0))
                     ],
-                    "label" => $this->translator->trans("Délai en minutes du premier rappel", [], AbandonedCartReminder::DOMAIN_NAME),
+                    "label" => $this->translator->trans('Time in minute before sending the first reminder', [], AbandonedCartReminder::DOMAIN_NAME),
                     'label_attr'  => [
                         'help' => $this->translator->trans(
-                            "Le nombre de minutes après la création du panier après lequel envoyer le premier rappel.",
+                            'Number of minutes to wait when the cart becomes inactive before sending the first email.',
                             [],
                             AbandonedCartReminder::DOMAIN_NAME
                         ),
@@ -60,7 +60,7 @@ class ConfigurationForm extends BaseForm
                 ]
             )
             ->add(
-                AbandonedCartReminder::VAR_DELAI_RAPPEL_2,
+                AbandonedCartReminder::REMINDER_TIME_2,
                 NumberType::class,
                 [
                     "required" => true,
@@ -68,10 +68,10 @@ class ConfigurationForm extends BaseForm
                         new NotBlank(),
                         new GreaterThanOrEqual(array('value' => 0))
                     ],
-                    "label" => $this->translator->trans("Délai en minutes du second rappel", [], AbandonedCartReminder::DOMAIN_NAME),
+                    "label" => $this->translator->trans('Time in minute before sending the second reminder', [], AbandonedCartReminder::DOMAIN_NAME),
                     'label_attr'  => [
                         'help' => $this->translator->trans(
-                            "Le nombre de minutes après la création du panier après lequel envoyer le second rappel.",
+                            'Number of minutes to wait when the cart becomes inactive before sending the second email.',
                             [],
                             AbandonedCartReminder::DOMAIN_NAME
                         ),
@@ -79,15 +79,15 @@ class ConfigurationForm extends BaseForm
                 ]
             )
             ->add(
-                AbandonedCartReminder::VAR_CODE_PROMO_RAPPEL_2,
+                AbandonedCartReminder::PROMO_CODE_REMINDER,
                 "choice",
                 [
                     'required' => false,
-                    "choices" => $promoListe,
-                    "label" => $this->translator->trans("Code promotion a proposer dans le mail du second rappel", [], AbandonedCartReminder::DOMAIN_NAME),
+                    "choices" => $promoCodeList,
+                    "label" => $this->translator->trans('Promotional code to offer while sending the second reminder', [], AbandonedCartReminder::DOMAIN_NAME),
                     'label_attr'  => [
                         'help' => $this->translator->trans(
-                            "Indiquez si vous le souhaitez un des codes promo existants.",
+                            'You can specify if you want an existing promotional code.',
                             [],
                             AbandonedCartReminder::DOMAIN_NAME
                         ),

@@ -2,7 +2,7 @@
     <div class="col-md-12 general-block-decorator">
         <div class="row">
             <div class="col-md-12 title title-without-tabs">
-                {intl d='abandonedcartreminder' l="Configuration des paniers abandonnés"}
+                {intl d='abandonedcartreminder' l="Abandoned carts management"}
             </div>
         </div>
         
@@ -30,9 +30,9 @@
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    {render_form_field form=$form field='delai_rappel_1_en_minutes' value=$delai_rappel_1_en_minutes}
-                                    {render_form_field form=$form field='delai_rappel_2_en_minutes' value=$delai_rappel_2_en_minutes}
-                                    {render_form_field form=$form field='code_promo_rappel_2' value=$code_promo_rappel_2}
+                                    {render_form_field form=$form field='first_reminder_in_minutes' value=$first_reminder_in_minutes}
+                                    {render_form_field form=$form field='second_reminder_in_minutes' value=$second_reminder_in_minutes}
+                                    {render_form_field form=$form field='promotional_code_reminder' value=$promotional_code_reminder}
                                 </div>
                             </div>
                         </form>

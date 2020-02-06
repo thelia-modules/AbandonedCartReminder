@@ -28,8 +28,7 @@ class ExamineAbandonedCart extends ContainerAwareCommand
     {
         $this
             ->setName("examine-abandoned-carts")
-            ->setDescription("Examine les paniers abandonnes en envoie les mails de rappel si nécessaire.")
-        ;
+            ->setDescription("Examine abandoned carts and send a reminder if needed.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
