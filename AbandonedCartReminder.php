@@ -26,6 +26,7 @@ class AbandonedCartReminder extends BaseModule
     /** @var string */
     const DOMAIN_NAME = 'abandonedcartreminder';
 
+    // TODO: Find a way to make those consts more flexible. Hint: an array ?
     const REMINDER_TIME_1 = 'first_reminder_in_minutes';
     const REMINDER_TIME_2 = 'second_reminder_in_minutes';
     const PROMO_CODE_REMINDER = 'promotional_code_reminder';

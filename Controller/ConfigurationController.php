@@ -26,7 +26,7 @@ class ConfigurationController extends BaseAdminController
             return $response;
         }
 
-        $configurationForm = $this->createForm('AbandonedCart.configuration.form');
+        $configurationForm = $this->createForm('abandonedcart.configuration.form');
 
         try {
             $form = $this->validateForm($configurationForm, "POST");
@@ -43,7 +43,7 @@ class ConfigurationController extends BaseAdminController
             }
 
             $this->adminLogAppend(
-                "AbandonedCart.configuration.message",
+                "abandonedcart.configuration.message",
                 AccessManager::UPDATE,
                 sprintf("AbandonedCart configuration updated")
             );

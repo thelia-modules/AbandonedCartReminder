@@ -267,7 +267,7 @@ class ListenerManager implements EventSubscriberInterface
 
         /** @var AbandonedCart $abandonedCart */
         foreach ($abandonedCarts as $abandonedCart) {
-            // Vérifier que le cart n'est pas vide.
+            // Ensure that the cart is not empty.
             if ($abandonedCart->getCart()->countCartItems() > 0) {
                 try {
                     $this->mailer->sendEmailMessage(
