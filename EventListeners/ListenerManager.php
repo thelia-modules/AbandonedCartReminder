@@ -150,8 +150,8 @@ class ListenerManager implements EventSubscriberInterface
         $originalCart = $event->getOriginalCart();
 
         // Delete the old
-        if (null !== $pa = AbandonedCartQuery::create()->findOneByCartId($originalCart->getId())) {
-            $pa->delete();
+        if (null !== $abandonedCart = AbandonedCartQuery::create()->findOneByCartId($originalCart->getId())) {
+            $abandonedCart->delete();
         }
 
         // Do not store an old cart which could be duplicated
@@ -194,8 +194,8 @@ class ListenerManager implements EventSubscriberInterface
     {
         // Update UpdatedAt
         if ($this->isStorable($event->getCart())) {
-            if (null !== $pa = AbandonedCartQuery::create()->findOneByCartId($event->getCart()->getId()))
-                $pa->setLastUpdate(new \DateTime())->save();
+            if (null !== $abandonedCart = AbandonedCartQuery::create()->findOneByCartId($event->getCart()->getId()))
+                $abandonedCart->setLastUpdate(new \DateTime())->save();
             else
                 $this->storeCart($event->getCart());
         }
@@ -211,8 +211,8 @@ class ListenerManager implements EventSubscriberInterface
         $order = $event->getOrder();
 
         if ($order->isPaid()) {
-            if (null !== $pa = AbandonedCartQuery::create()->findOneByCartId($order->getCartId())) {
-                $pa->delete();
+            if (null !== $abandonedCart = AbandonedCartQuery::create()->findOneByCartId($order->getCartId())) {
+                $abandonedCart->delete();
             }
         }
     }
