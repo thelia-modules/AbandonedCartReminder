@@ -1,0 +1,12 @@
+{extends file="layout-reminder-mail.tpl"}
+
+{block name="contenu"}
+    <p class="title">{intl l='HERE IS THE CONTENT OF YOUR CART :' d="abandonedcartreminder"}</p>
+{/block}
+
+{block name="footer"}
+    {if $code_promo != null}
+    <p>{intl l='Do not hesitate! Claim your free discount thanks to this promotional code :' d="abandonedcartreminder"} <p style="color: #ef476b;">{$code_promo}</p></p>
+    {/if}
+    <p class="right">{intl l='Have a nice day.'}</p>
+{/block}
