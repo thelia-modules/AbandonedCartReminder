@@ -146,7 +146,7 @@
                                     <td class="head" style="text-align: center;">{intl l="Amount" d="abandonedcartreminder"}</td>
                                     <td class="head" style="text-align: right;">&nbsp{intl l="Total" d="abandonedcartreminder"}</td>
                                 </tr>
-                                {loop type="abandonedcart.cartitem" name="pa" cart_id=$cart_id}
+                                {loop type="abandoned_cart_reminder.cartitem" name="pa" cart_id=$cart_id}
                                     <tr>
                                         <td>
                                             {loop type="image" name="pi" source="product" source_id=$PRODUCT_ID width="118" height="85" limit="1" force_return="true"}

@@ -5,15 +5,15 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
 
-    <route id="AbandonedCart.admin.configure" path="/admin/module/AbandonedCartReminder/configure" methods="post">
+    <route id="abandoned_cart_reminder.admin.configure" path="/admin/module/AbandonedCartReminder/configure" methods="post">
         <default key="_controller">AbandonedCartReminder\Controller\ConfigurationController::configure</default>
     </route>
 
-    <route id="AbandonedCart.cart" path="/back-to-cart/{token}" methods="get">
+    <route id="abandoned_cart_reminder.cart" path="/back-to-cart/{token}" methods="get">
         <default key="_controller">AbandonedCartReminder\Controller\BackToCartController::loadCart</default>
     </route>
 
-    <route id="AbandonedCart.cron" path="/admin/AbandonedCartReminder/cron">
+    <route id="abandoned_cart_reminder.cron" path="/admin/AbandonedCartReminder/cron">
         <default key="_controller">AbandonedCartReminder\Controller\ExamineAbandonedCartController::examine</default>
     </route>
 </routes>

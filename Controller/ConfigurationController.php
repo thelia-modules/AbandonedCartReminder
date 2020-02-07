@@ -1,12 +1,13 @@
 <?php
 /*************************************************************************************/
+/*      This file is part of the Thelia package.                                     */
 /*                                                                                   */
-/*      Thelia 2 PortLocalAvecFranco payment module                                               */
+/*      Copyright (c) OpenStudio                                                     */
+/*      email : dev@thelia.net                                                       */
+/*      web : http://www.thelia.net                                                  */
 /*                                                                                   */
-/*      Copyright (c) CQFDev                                                         */
-/*      email : thelia@cqfdev.fr                                                     */
-/*      web : http://www.cqfdev.fr                                                   */
-/*                                                                                   */
+/*      For the full copyright and license information, please view the LICENSE.txt  */
+/*      file that was distributed with this source code.                             */
 /*************************************************************************************/
 
 namespace AbandonedCartReminder\Controller;
@@ -22,11 +23,11 @@ class ConfigurationController extends BaseAdminController
 {
     public function configure()
     {
-        if (null !== $response = $this->checkAuth(AdminResources::MODULE, 'AbandonedCart', AccessManager::UPDATE)) {
+        if (null !== $response = $this->checkAuth(AdminResources::MODULE, 'AbandonedCartReminder', AccessManager::UPDATE)) {
             return $response;
         }
 
-        $configurationForm = $this->createForm('abandonedcart.configuration.form');
+        $configurationForm = $this->createForm("abandoned_cart_reminder.configuration.form");
 
         try {
             $form = $this->validateForm($configurationForm, "POST");
@@ -43,7 +44,7 @@ class ConfigurationController extends BaseAdminController
             }
 
             $this->adminLogAppend(
-                "abandonedcart.configuration.message",
+                "abandoned_cart_reminder.configuration.message",
                 AccessManager::UPDATE,
                 sprintf("AbandonedCart configuration updated")
             );
@@ -58,14 +59,14 @@ class ConfigurationController extends BaseAdminController
 
             return $this->generateRedirect(URL::getInstance()->absoluteUrl($url));
         } catch (FormValidationException $ex) {
-            $error_msg = $this->createStandardFormValidationErrorMessage($ex);
+            $errorMessage = $this->createStandardFormValidationErrorMessage($ex);
         } catch (\Exception $ex) {
-            $error_msg = $ex->getMessage();
+            $errorMessage = $ex->getMessage();
         }
 
         $this->setupFormErrorContext(
             $this->getTranslator()->trans("AbandonedCart configuration", [], AbandonedCartReminder::DOMAIN_NAME),
-            $error_msg,
+            $errorMessage,
             $configurationForm,
             $ex
         );
