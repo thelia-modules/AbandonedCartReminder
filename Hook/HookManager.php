@@ -31,7 +31,7 @@ class HookManager extends BaseHook
     {
         $vars = [];
 
-        // Passer toutes les variables de configuration au template
+        // Pass all config vars to the template
         if (null !== $params = ModuleConfigQuery::create()->findByModuleId(AbandonedCartReminder::getModuleId())) {
             /** @var ModuleConfig $param */
             foreach ($params as $param) {
