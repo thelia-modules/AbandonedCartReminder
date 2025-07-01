@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="TheliaMain"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+
+    <table name="abandoned_cart" namespace="AbandonedCartReminder\Model">
+        <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true" />
+        <column name="cart_id" required="true" type="INTEGER" />
+        <column name="email_client" size="255" type="VARCHAR" />
+        <column name="locale" size="5" type="VARCHAR" />
+        <column name="status" size="1" type="INTEGER" defaultValue="0" />
+        <column name="login_token" size="255" type="VARCHAR" />
+        <column name="last_update" type="TIMESTAMP"/>
+
+        <foreign-key foreignTable="cart" name="fk_abandoned_cart_cart_id" onDelete="CASCADE" onUpdate="RESTRICT">
+            <reference foreign="id" local="cart_id" />
+        </foreign-key>
+    </table>
+
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

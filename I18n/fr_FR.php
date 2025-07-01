@@ -1,0 +1,25 @@
+<?php
+return array(
+    'Product' => 'Produit',
+    'Product Name' => 'Nom du Produit',
+    'Price' => 'Prix',
+    'Amount' => 'Quantité',
+    'Total' => 'Total',
+    'Do not offer any promotional code' => 'Ne pas offrir de code promo',
+    'GOT ANY PROBLEM WITH YOUR ORDER ?' => 'Avez vous rencontré un probleme ?',
+    'We are here to answer all your possible questions. Do not hesitate to contact us.' => 'Nous sommes à votre disposition pour répondre à toutes vos questions éventuelles. N\'hésitez pas à nous contacter.',
+    'YOUR CART FEELS LONELY' => 'VOTRE PANIER SE SENT SEUL',
+    'HERE IS THE CONTENT OF YOUR CART :' => 'Voici le contenu de votre panier :',
+    'Abandoned carts management' => 'Configuration des paniers abandonnés',
+    'Your order is waiting for you !' => 'Votre commande vous attend !',
+    'GO BACK TO MY CART' => 'RETOURNER À MON PANIER',
+    'Do not hesitate! Claim your free discount thanks to this promotional code :' => 'N\'hésitez plus! Profitez d\'une réduction dès maintenant avec le code :',
+    'It seems that you forgot your cart !' => 'Alors comme ça, vous êtes du genre à oublier votre panier ?',
+    'Your cart is still waiting for you !' => 'Votre panier vous attend toujours !',
+    'Promotional code to offer while sending the second reminder' => 'Code promotion a proposer dans le mail du second rappel',
+    'Time in minute before sending the first reminder' => 'Délai en minutes du premier rappel',
+    'Time in minute before sending the second reminder' => 'Délai en minutes du second rappel',
+    'Number of minutes to wait when the cart becomes inactive before sending the first email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le premier rappel.',
+    'Number of minutes to wait when the cart becomes inactive before sending the second email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le second rappel.',
+    'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.'
+);
