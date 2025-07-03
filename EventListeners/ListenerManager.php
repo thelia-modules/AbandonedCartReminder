@@ -186,14 +186,14 @@ class ListenerManager implements EventSubscriberInterface
      */
     public function updateCart(CartEvent $event): void
     {
-        // Update UpdatedAt
+        // Only create the abandoned cart if it doesn't exist yet
+        // Do NOT update lastUpdate when cart is modified - this would reset the timer!
         if ($this->isStorable($event->getCart())) {
-            if (null !== $abandonedCart = AbandonedCartQuery::create()->findOneByCartId($event->getCart()->getId())) {
-                $abandonedCart->setLastUpdate(new \DateTime())->save();
-            }
-            else {
+            if (null === AbandonedCartQuery::create()->findOneByCartId($event->getCart()->getId())) {
+                // Cart doesn't exist in abandoned_cart table yet, create it
                 $this->storeCart($event->getCart());
             }
+            // If cart already exists, do nothing - preserve the original lastUpdate timestamp
         }
     }
 
@@ -218,7 +218,16 @@ class ListenerManager implements EventSubscriberInterface
      */
     public function cron(ActionEvent $event): void
     {
-        Tlog::getInstance()->notice("Examen des paniers abandonnes");
+        Tlog::getInstance()->notice("=== Debut examen des paniers abandonnes ===");
+        
+        // Log configuration
+        $delay1 = AbandonedCartReminder::getConfigValue(AbandonedCartReminder::REMINDER_TIME_1);
+        $delay2 = AbandonedCartReminder::getConfigValue(AbandonedCartReminder::REMINDER_TIME_2);
+        Tlog::getInstance()->notice("Configuration: 1er rappel = {$delay1} min, 2e rappel = {$delay2} min");
+
+        // Count total abandoned carts
+        $totalCarts = AbandonedCartQuery::create()->count();
+        Tlog::getInstance()->notice("Total paniers abandonnes en base: {$totalCarts}");
 
         $this->sendReminder(
             AbandonedCartReminder::REMINDER_TIME_1,
@@ -235,10 +244,19 @@ class ListenerManager implements EventSubscriberInterface
         );
 
         // Delete everyone who already got the second reminder
+        $deletedCount = AbandonedCartQuery::create()
+            ->filterBystatus(AbandonedCart::RAPPEL_2_ENVOYE)
+            ->count();
+            
         AbandonedCartQuery::create()
             ->filterBystatus(AbandonedCart::RAPPEL_2_ENVOYE)
-            ->delete()
-        ;
+            ->delete();
+            
+        if ($deletedCount > 0) {
+            Tlog::getInstance()->notice("Suppression de {$deletedCount} paniers avec 2e rappel deja envoye");
+        }
+        
+        Tlog::getInstance()->notice("=== Fin examen des paniers abandonnes ===");
     }
 
     /**
@@ -251,18 +269,31 @@ class ListenerManager implements EventSubscriberInterface
      */
     protected function sendReminder($varDelai, $filtreStatus, $codeMessage, $nouvelEtat): void
     {
+        $delaiMinutes = AbandonedCartReminder::getConfigValue($varDelai);
         $delai = new \DateTime();
-        $delai = $delai->sub(new \DateInterval('PT' . AbandonedCartReminder::getConfigValue($varDelai) . 'M'));
+        $delai = $delai->sub(new \DateInterval('PT' . $delaiMinutes . 'M'));
+
+        Tlog::getInstance()->notice("--- Verification rappel (statut {$filtreStatus} -> {$nouvelEtat}) ---");
+        Tlog::getInstance()->notice("Recherche paniers avec lastUpdate < " . $delai->format('Y-m-d H:i:s') . " (il y a {$delaiMinutes} min)");
 
         $abandonedCarts = AbandonedCartQuery::create()
             ->filterByStatus($filtreStatus)
             ->filterByLastUpdate($delai, Criteria::LESS_THAN)
             ->find();
 
+        $foundCarts = count($abandonedCarts);
+        Tlog::getInstance()->notice("Trouve {$foundCarts} paniers eligibles pour rappel");
+
         /** @var AbandonedCart $abandonedCart */
         foreach ($abandonedCarts as $abandonedCart) {
+            $cartItems = $abandonedCart->getCart()->countCartItems();
+            $minutesDepuis = (new \DateTime())->diff($abandonedCart->getLastUpdate())->i + 
+                           ((new \DateTime())->diff($abandonedCart->getLastUpdate())->h * 60);
+            
+            Tlog::getInstance()->notice("Panier ID {$abandonedCart->getCartId()}: {$cartItems} articles, abandonne depuis {$minutesDepuis} min");
+            
             // Ensure that the cart is not empty.
-            if ($abandonedCart->getCart()->countCartItems() > 0) {
+            if ($cartItems > 0) {
                 try {
                     $this->mailer->sendEmailMessage(
                         $codeMessage,
@@ -275,9 +306,9 @@ class ListenerManager implements EventSubscriberInterface
                         ],
                         $abandonedCart->getLocale()
                     );
-                    Tlog::getInstance()->notice("Sending reminder number. " . $nouvelEtat . " to customer " . $abandonedCart->getEmailClient());
+                    Tlog::getInstance()->notice("✓ Rappel {$nouvelEtat} envoye a " . $abandonedCart->getEmailClient());
                 } catch (\Exception $ex) {
-                    Tlog::getInstance()->error("Failed to send reminder number. " . $nouvelEtat . " to customer " . $abandonedCart->getEmailClient() . ". Reason:".$ex->getMessage());
+                    Tlog::getInstance()->error("✗ Echec envoi rappel {$nouvelEtat} a " . $abandonedCart->getEmailClient() . ": " . $ex->getMessage());
                 }
 
                 $abandonedCart->clearAllReferences();
@@ -286,7 +317,7 @@ class ListenerManager implements EventSubscriberInterface
                     ->setstatus($nouvelEtat)
                     ->save();
             } else {
-                // Delete this deprecated cart
+                Tlog::getInstance()->notice("✗ Panier vide supprime: ID " . $abandonedCart->getCartId());
                 $abandonedCart->delete();
             }
         }
