@@ -21,5 +21,12 @@ return array(
     'Time in minute before sending the second reminder' => 'Délai en minutes du second rappel',
     'Number of minutes to wait when the cart becomes inactive before sending the first email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le premier rappel.',
     'Number of minutes to wait when the cart becomes inactive before sending the second email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le second rappel.',
-    'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.'
+    'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.',
+    'I finalize my order' => 'je finalise ma commande',
+    'Have a nice day, The Au Sabot team' => 'Belle journée, L’équipe Au Sabot',
+    'You left some items in your cart… and they’re just waiting for you!' => 'Vous avez laissé quelques articles dans votre panier… et ils n’attendent que vous !',
+    'Good news: they\'re still available, but maybe not for long.' => 'Bonne nouvelle : ils sont toujours disponibles, mais peut-être pas pour longtemps.',
+    'See you soon at the Au Sabot store!' => 'À très vite sur la boutique Au Sabot !',
+    'Need help? Our team is here to answer all your questions.' => 'Besoin d’aide ? Notre équipe est là pour répondre à toutes vos questions.',
+    'Hello' => 'Bonjour'
 );

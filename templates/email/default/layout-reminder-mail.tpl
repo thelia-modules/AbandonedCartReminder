@@ -119,17 +119,14 @@
         }
 
         .btn-panier {
-            color: #fff;
-            background-color: #f15a24;
+            color: #fff !important;
+            background-color: #AF1F4C;
             padding: 10px 20px;
             text-transform: uppercase;
             text-decoration: none;
         }
 
     </style>
-    <p class="title"><b>REVENEZ VITE !</b></p>
-    <p>Avant que vos articles ne soient plus disponibles...</p>
-
     <table class="main">
         <tr>
             <td>
@@ -212,7 +209,7 @@
                                 <tr>
                                     <td colspan="999">
                                         <br>&nbsp;<br>
-                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='GO BACK TO MY CART' d="abandonedcartreminder"}</a></p>
+                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='I finalize my order' d="abandonedcartreminder"}</a></p>
                                     </td>
                                 </tr>
                             </table>
@@ -224,8 +221,8 @@
         </tr>
     </table>
     <br />
-    <p> Et comme toujours, votre commande sera expédiée au plus tard le lendemain (sauf dimanche et jours fériés)</p>
-    <p> Si vous avez des questions, n'hésitez pas à nous contacter pour toutes questions concernant un produit ou une commande</p>
+    <p>{intl l='Need help? Our team is here to answer all your questions.' d="abandonedcartreminder"}</p>
+    <p>{intl l='See you soon at the Au Sabot store!' d="abandonedcartreminder"}</p>
     <br />
     <br />
     {block name="footer"}
