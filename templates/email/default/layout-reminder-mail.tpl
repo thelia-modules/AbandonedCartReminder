@@ -119,17 +119,14 @@
         }
 
         .btn-panier {
-            color: #fff;
-            background-color: #f15a24;
+            color: #fff !important;
+            background-color: #AF1F4C;
             padding: 10px 20px;
             text-transform: uppercase;
             text-decoration: none;
         }
 
     </style>
-    <p class="title"><b>REVENEZ VITE !</b></p>
-    <p>Avant que vos articles ne soient plus disponibles...</p>
-
     <table class="main">
         <tr>
             <td>
@@ -142,7 +139,7 @@
                             <div class="wrapper-panier">
                                 <table width="100%" class="panier">
                                 <tr>
-                                    <td class="head">{intl l="Product" d="abandonedcartreminder"}</td>
+                                    <td class="head">{intl l="Réference" d="abandonedcartreminder"}</td>
                                     <td class="head">{intl l="Product Name" d="abandonedcartreminder"}</td>
                                     <td class="head" style="text-align: center;">{intl l="Price" d="abandonedcartreminder"}</td>
                                     <td class="head" style="text-align: center;">{intl l="Amount" d="abandonedcartreminder"}</td>
@@ -155,8 +152,8 @@
                                 {loop type="abandonned_cart" name="pa" cart_id=$cart_id}
                                     <tr>
                                         <td>
-                                            {loop type="image" name="pi" source="product" source_id=$PRODUCT_ID width="118" height="85" limit="1" force_return="true"}
-                                                <img src="{$IMAGE_URL}">
+                                            {loop name="pse" type="product_sale_elements" id=$PRODUCT_SALE_ELEMENTS_ID}
+                                                {$REF}
                                             {/loop}
                                         </td>
 
@@ -212,7 +209,7 @@
                                 <tr>
                                     <td colspan="999">
                                         <br>&nbsp;<br>
-                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='GO BACK TO MY CART' d="abandonedcartreminder"}</a></p>
+                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='I finalize my order' d="abandonedcartreminder"}</a></p>
                                     </td>
                                 </tr>
                             </table>
@@ -224,8 +221,8 @@
         </tr>
     </table>
     <br />
-    <p> Et comme toujours, votre commande sera expédiée au plus tard le lendemain (sauf dimanche et jours fériés)</p>
-    <p> Si vous avez des questions, n'hésitez pas à nous contacter pour toutes questions concernant un produit ou une commande</p>
+    <p>{intl l='Need help? Our team is here to answer all your questions.' d="abandonedcartreminder"}</p>
+    <p>{intl l='See you soon at the store!' d="abandonedcartreminder"}</p>
     <br />
     <br />
     {block name="footer"}
