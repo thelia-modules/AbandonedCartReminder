@@ -222,7 +222,7 @@
     </table>
     <br />
     <p>{intl l='Need help? Our team is here to answer all your questions.' d="abandonedcartreminder"}</p>
-    <p>{intl l='See you soon at the Au Sabot store!' d="abandonedcartreminder"}</p>
+    <p>{intl l='See you soon at the store!' d="abandonedcartreminder"}</p>
     <br />
     <br />
     {block name="footer"}

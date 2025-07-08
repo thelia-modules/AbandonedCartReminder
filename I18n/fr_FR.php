@@ -25,10 +25,9 @@ return array(
     'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.',
     'I finalize my order' => 'je finalise ma commande',
     'Have a nice day,' => 'Belle journée,',
-    'The Au Sabot team' => 'L’équipe Au Sabot',
     'You left some items in your cart… and they’re just waiting for you!' => 'Vous avez laissé quelques articles dans votre panier… et ils n’attendent que vous !',
     'Good news: they\'re still available, but maybe not for long.' => 'Bonne nouvelle : ils sont toujours disponibles, mais peut-être pas pour longtemps.',
-    'See you soon at the Au Sabot store!' => 'À très vite sur la boutique Au Sabot !',
+    'See you soon at the store!' => 'À très vite sur la boutique !',
     'Need help? Our team is here to answer all your questions.' => 'Besoin d’aide ? Notre équipe est là pour répondre à toutes vos questions.',
     'Hello' => 'Bonjour'
 );
