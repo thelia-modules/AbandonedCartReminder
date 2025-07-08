@@ -1,12 +1,13 @@
 {extends file="layout-reminder-mail.tpl"}
 
 {block name="contenu"}
+    <p>{intl l='Hello' d="abandonedcartreminder"},</p>
+    <p>{intl l='You left some items in your cart… and they’re just waiting for you!' d="abandonedcartreminder"}</p>
+    <p>{intl l='Good news: they\'re still available, but maybe not for long.' d="abandonedcartreminder"}</p>
+    <br /><br />
     <p class="title">{intl l='HERE IS THE CONTENT OF YOUR CART :' d="abandonedcartreminder"}</p>
 {/block}
 
 {block name="footer"}
-    {if $code_promo != null}
-    <p>{intl l='Do not hesitate! Claim your free discount thanks to this promotional code :' d="abandonedcartreminder"} <p style="color: #ef476b;">{$code_promo}</p></p>
-    {/if}
-    <p class="right">{intl l='Have a nice day.'}</p>
+    <p class="right">{intl l='Have a nice day, The Au Sabot team' d="abandonedcartreminder"}</p>
 {/block}

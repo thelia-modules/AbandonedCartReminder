@@ -15,11 +15,20 @@ return array(
     'GO BACK TO MY CART' => 'RETOURNER À MON PANIER',
     'Do not hesitate! Claim your free discount thanks to this promotional code :' => 'N\'hésitez plus! Profitez d\'une réduction dès maintenant avec le code :',
     'It seems that you forgot your cart !' => 'Alors comme ça, vous êtes du genre à oublier votre panier ?',
+    'Second Relaunch: Your basket is still waiting for you!' => 'Seconde Relance : Votre panier vous attend toujours !',
     'Your cart is still waiting for you !' => 'Votre panier vous attend toujours !',
     'Promotional code to offer while sending the second reminder' => 'Code promotion a proposer dans le mail du second rappel',
     'Time in minute before sending the first reminder' => 'Délai en minutes du premier rappel',
     'Time in minute before sending the second reminder' => 'Délai en minutes du second rappel',
     'Number of minutes to wait when the cart becomes inactive before sending the first email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le premier rappel.',
     'Number of minutes to wait when the cart becomes inactive before sending the second email.' => 'Le nombre de minutes après la création du panier après lequel envoyer le second rappel.',
-    'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.'
+    'You can specify if you want an existing promotional code.' => 'Indiquez si vous le souhaitez un des codes promo existants.',
+    'I finalize my order' => 'je finalise ma commande',
+    'Have a nice day,' => 'Belle journée,',
+    'The Au Sabot team' => 'L’équipe Au Sabot',
+    'You left some items in your cart… and they’re just waiting for you!' => 'Vous avez laissé quelques articles dans votre panier… et ils n’attendent que vous !',
+    'Good news: they\'re still available, but maybe not for long.' => 'Bonne nouvelle : ils sont toujours disponibles, mais peut-être pas pour longtemps.',
+    'See you soon at the Au Sabot store!' => 'À très vite sur la boutique Au Sabot !',
+    'Need help? Our team is here to answer all your questions.' => 'Besoin d’aide ? Notre équipe est là pour répondre à toutes vos questions.',
+    'Hello' => 'Bonjour'
 );
