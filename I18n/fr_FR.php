@@ -30,5 +30,7 @@ return array(
     'Good news: they\'re still available, but maybe not for long.' => 'Bonne nouvelle : ils sont toujours disponibles, mais peut-être pas pour longtemps.',
     'See you soon at the store!' => 'À très vite sur la boutique !',
     'Need help? Our team is here to answer all your questions.' => 'Besoin d’aide ? Notre équipe est là pour répondre à toutes vos questions.',
-    'Hello' => 'Bonjour'
+    'Hello' => 'Bonjour',
+    'URL tracking arguments' => 'Arguments de tracking URL',
+    'Arguments to add to the URL of the "Finalize my order" button. Please start with ?' => 'Arguments à ajouter à l\'URL du bouton "Finaliser ma commande". Merci de commencer par ?',
 );

@@ -271,7 +271,8 @@ class ListenerManager implements EventSubscriberInterface
                         [
                             'cart_id' => $abandonedCart->getCartId(),
                             'login_token' => $abandonedCart->getLoginToken(),
-                            'code_promo' => AbandonedCartReminder::getConfigValue(AbandonedCartReminder::PROMO_CODE_REMINDER)
+                            'code_promo' => AbandonedCartReminder::getConfigValue(AbandonedCartReminder::PROMO_CODE_REMINDER),
+                            'url_tracking_arguments' => AbandonedCartReminder::getConfigValue(AbandonedCartReminder::CONFIG_NAME_URL_TRACKING_ARGUMENTS)
                         ],
                         $abandonedCart->getLocale()
                     );

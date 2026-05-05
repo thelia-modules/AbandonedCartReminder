@@ -33,6 +33,7 @@ class AbandonedCartReminder extends BaseModule
     public const PROMO_CODE_REMINDER = 'promotional_code_reminder';
     public const REMINDER_MESSAGE_1 = 'abandoned-cart-reminder-message-1';
     public const REMINDER_MESSAGE_2 = 'abandoned-cart-reminder-message-2';
+    public const CONFIG_NAME_URL_TRACKING_ARGUMENTS = 'url_tracking_arguments';
 
     /**
      * @param ConnectionInterface|null $con

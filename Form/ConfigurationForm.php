@@ -21,6 +21,7 @@ use Thelia\Form\BaseForm;
 use Thelia\Model\Coupon;
 use Thelia\Model\CouponQuery;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ConfigurationForm extends BaseForm
 {
@@ -93,6 +94,21 @@ class ConfigurationForm extends BaseForm
                     'label_attr'  => [
                         'help' => $this->translator->trans(
                             'You can specify if you want an existing promotional code.',
+                            [],
+                            AbandonedCartReminder::DOMAIN_NAME
+                        ),
+                    ],
+                ]
+            )
+            ->add(
+                AbandonedCartReminder::CONFIG_NAME_URL_TRACKING_ARGUMENTS,
+                TextType::class,
+                [
+                    "required" => false,
+                    "label" => $this->translator->trans('URL tracking arguments', [], AbandonedCartReminder::DOMAIN_NAME),
+                    'label_attr'  => [
+                        'help' => $this->translator->trans(
+                            'Arguments to add to the URL of the "Finalize my order" button. Please start with ?',
                             [],
                             AbandonedCartReminder::DOMAIN_NAME
                         ),

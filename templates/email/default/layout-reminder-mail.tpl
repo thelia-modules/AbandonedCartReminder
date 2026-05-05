@@ -209,7 +209,7 @@
                                 <tr>
                                     <td colspan="999">
                                         <br>&nbsp;<br>
-                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}">{intl l='I finalize my order' d="abandonedcartreminder"}</a></p>
+                                        <p><a class="btn-panier" href="{url path="/back-to-cart/%token" token=$login_token}{$url_tracking_arguments}">{intl l='I finalize my order' d="abandonedcartreminder"}</a></p>
                                     </td>
                                 </tr>
                             </table>
