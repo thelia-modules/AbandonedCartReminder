@@ -120,7 +120,7 @@
 
         .btn-panier {
             color: #fff !important;
-            background-color: #AF1F4C;
+            background-color: #000000;
             padding: 10px 20px;
             text-transform: uppercase;
             text-decoration: none;

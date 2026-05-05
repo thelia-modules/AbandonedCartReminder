@@ -75,11 +75,11 @@ class AbandonedCartReminder extends BaseModule
                 $message->setLocale($locale);
 
                 $message->setTitle(
-                    Translator::getInstance()->trans("Seconde Relance : Votre panier vous attend toujours !", [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans("Your cart is still waiting for you !", [], self::DOMAIN_NAME, $locale)
                 );
 
                 $message->setSubject(
-                    Translator::getInstance()->trans("Seconde Relance : Votre panier vous attend toujours !", [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans("Your cart is still waiting for you !", [], self::DOMAIN_NAME, $locale)
                 );
             }
 
@@ -104,11 +104,11 @@ class AbandonedCartReminder extends BaseModule
                 $message->setLocale($locale);
 
                 $message->setTitle(
-                    Translator::getInstance()->trans('Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans('Second reminder : Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
                 );
 
                 $message->setSubject(
-                    Translator::getInstance()->trans('Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
+                    Translator::getInstance()->trans('Second reminder : Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
                 );
             }
 

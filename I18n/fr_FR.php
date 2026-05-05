@@ -17,6 +17,7 @@ return array(
     'It seems that you forgot your cart !' => 'Alors comme ça, vous êtes du genre à oublier votre panier ?',
     'Second Relaunch: Your basket is still waiting for you!' => 'Seconde Relance : Votre panier vous attend toujours !',
     'Your cart is still waiting for you !' => 'Votre panier vous attend toujours !',
+    'Second reminder : Your cart is still waiting for you !' => 'Seconde relance : Votre panier vous attend toujours !',
     'Promotional code to offer while sending the second reminder' => 'Code promotion a proposer dans le mail du second rappel',
     'Time in minute before sending the first reminder' => 'Délai en minutes du premier rappel',
     'Time in minute before sending the second reminder' => 'Délai en minutes du second rappel',
