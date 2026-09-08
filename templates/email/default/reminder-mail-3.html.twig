@@ -1,0 +1,17 @@
+{% extends "email-layout.html.twig" %}
+
+{% block browser %}{% endblock %}
+{% block image_header %}{% endblock %}
+{% block pre_header %}{% endblock %}
+{% block email_title %}{% endblock %}
+
+{% block email_subject %}{{ 'Last chance to complete your order'|abandoned_cart_reminder_trans }}{% endblock %}
+
+{% block email_content %}
+    <p>{{ 'Hello'|abandoned_cart_reminder_trans }},</p>
+    <p>{{ 'This is the last reminder about the cart you left behind.'|abandoned_cart_reminder_trans }}</p>
+    {% include "_cart-table.html.twig" %}
+    <p><a href="{{ thelia_url('/back-to-cart/%token', {token: recovery_token}) }}">{{ 'Complete my order'|abandoned_cart_reminder_trans }}</a></p>
+    <p class="acr-unsubscribe"><a href="{{ thelia_url('/cart-reminder/unsubscribe/%token', {token: unsubscribe_token}) }}">{{ 'Stop reminding me about my carts'|abandoned_cart_reminder_trans }}</a></p>
+    <p>{{ 'See you soon,'|abandoned_cart_reminder_trans }}<br />{{ 'The %store% team.'|abandoned_cart_reminder_trans({'%store%': config('store_name')}) }}</p>
+{% endblock %}

@@ -1,0 +1,16 @@
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+    <tr>
+        <th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">{{ 'Reference'|abandoned_cart_reminder_trans }}</th>
+        <th style="text-align:left;padding:6px;border-bottom:1px solid #ddd;">{{ 'Product'|abandoned_cart_reminder_trans }}</th>
+        <th style="text-align:center;padding:6px;border-bottom:1px solid #ddd;">{{ 'Quantity'|abandoned_cart_reminder_trans }}</th>
+        <th style="text-align:right;padding:6px;border-bottom:1px solid #ddd;">{{ 'Total'|abandoned_cart_reminder_trans }}</th>
+    </tr>
+    {% for item in loop('reminder-items', 'abandoned-cart-item', {cart_id: cart_id}) %}
+        <tr>
+            <td style="padding:6px;border-bottom:1px solid #f0f0f0;">{{ item.REF }}</td>
+            <td style="padding:6px;border-bottom:1px solid #f0f0f0;">{{ item.TITLE }}</td>
+            <td style="padding:6px;border-bottom:1px solid #f0f0f0;text-align:center;">{{ item.QUANTITY }}</td>
+            <td style="padding:6px;border-bottom:1px solid #f0f0f0;text-align:right;">{{ format_money(item.TOTAL_TAXED_PRICE, currency_id) }}</td>
+        </tr>
+    {% endfor %}
+</table>

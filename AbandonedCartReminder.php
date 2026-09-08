@@ -1,130 +1,116 @@
 <?php
-/*************************************************************************************/
-/*      This file is part of the Thelia package.                                     */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
-/*                                                                                   */
-/*      For the full copyright and license information, please view the LICENSE.txt  */
-/*      file that was distributed with this source code.                             */
-/*************************************************************************************/
+
+declare(strict_types=1);
 
 namespace AbandonedCartReminder;
 
-use AbandonedCartReminder\Model\AbandonedCartQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\Exception\PropelException;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
+use Thelia\Core\Install\Database;
 use Thelia\Core\Translation\Translator;
-use Thelia\Install\Database;
-use Thelia\Model\MessageQuery;
-use Thelia\Model\Lang;
 use Thelia\Model\LangQuery;
 use Thelia\Model\Message;
+use Thelia\Model\MessageQuery;
 use Thelia\Module\BaseModule;
 
 class AbandonedCartReminder extends BaseModule
 {
-    /** @var string */
     public const DOMAIN_NAME = 'abandonedcartreminder';
-    public const REMINDER_TIME_1 = 'first_reminder_in_minutes';
-    public const REMINDER_TIME_2 = 'second_reminder_in_minutes';
-    public const PROMO_CODE_REMINDER = 'promotional_code_reminder';
-    public const REMINDER_MESSAGE_1 = 'abandoned-cart-reminder-message-1';
-    public const REMINDER_MESSAGE_2 = 'abandoned-cart-reminder-message-2';
-    public const CONFIG_NAME_URL_TRACKING_ARGUMENTS = 'url_tracking_arguments';
 
-    /**
-     * @param ConnectionInterface|null $con
-     * @return void
-     * @throws PropelException
-     */
-    public function postActivation(ConnectionInterface $con = null): void
+    public const FIRST_REMINDER_DELAY_IN_HOURS = 'first_reminder_delay_in_hours';
+    public const SECOND_REMINDER_DELAY_IN_HOURS = 'second_reminder_delay_in_hours';
+    public const THIRD_REMINDER_DELAY_IN_HOURS = 'third_reminder_delay_in_hours';
+
+    public const RECOVERY_LINK_LIFETIME_IN_SECONDS = 'recovery_link_lifetime_in_seconds';
+    public const REMINDERS_PER_RUN = 'reminders_per_run';
+
+    public const FIRST_REMINDER_MESSAGE = 'abandoned-cart-reminder-message-1';
+    public const SECOND_REMINDER_MESSAGE = 'abandoned-cart-reminder-message-2';
+    public const THIRD_REMINDER_MESSAGE = 'abandoned-cart-reminder-message-3';
+
+    public const REMINDER_MESSAGES = [
+        1 => self::FIRST_REMINDER_MESSAGE,
+        2 => self::SECOND_REMINDER_MESSAGE,
+        3 => self::THIRD_REMINDER_MESSAGE,
+    ];
+
+    private const REMINDER_SUBJECTS = [
+        1 => 'Your cart is still waiting for you',
+        2 => 'Your cart is still available',
+        3 => 'Last chance to complete your order',
+    ];
+
+    private const CONFIGURATION_DEFAULTS = [
+        self::FIRST_REMINDER_DELAY_IN_HOURS => '4',
+        self::SECOND_REMINDER_DELAY_IN_HOURS => '24',
+        self::THIRD_REMINDER_DELAY_IN_HOURS => '72',
+        self::RECOVERY_LINK_LIFETIME_IN_SECONDS => '604800',
+        self::REMINDERS_PER_RUN => '200',
+    ];
+
+    public function preActivation(?ConnectionInterface $con = null): bool
     {
-        if (null === self::getConfigValue('is-initialized')) {
-            $database = new Database($con);
-            $database->insertSql(null, [__DIR__ . "/Config/TheliaMain.sql"]);
+        if (!$this->getConfigValue('is_initialized', false)) {
+            (new Database($con))->insertSql(null, [__DIR__.'/Config/TheliaMain.sql']);
 
-            self::setConfigValue('is-initialized', 1);
+            $this->setConfigValue('is_initialized', true);
         }
 
-        if (null === self::getConfigValue(self::REMINDER_TIME_1)) {
-            self::setConfigValue(self::REMINDER_TIME_1, 2);
-        }
+        return true;
+    }
 
-        if (null === self::getConfigValue(self::REMINDER_TIME_2)) {
-            self::setConfigValue(self::REMINDER_TIME_2, 10);
-        }
-
-        if (null === MessageQuery::create()->findOneByName(self::REMINDER_MESSAGE_1)) {
-
-            $message = new Message();
-            $message
-                ->setName(self::REMINDER_MESSAGE_1)
-                ->setHtmlLayoutFileName('')
-                ->setHtmlTemplateFileName('reminder-mail-1.html')
-                ->setTextLayoutFileName('')
-                ->setTextTemplateFileName('reminder-mail-1.txt');
-
-            $languages = LangQuery::create()->find();
-
-            foreach ($languages as $language) {
-                /** @var Lang $language */
-                $locale = $language->getLocale();
-
-                $message->setLocale($locale);
-
-                $message->setTitle(
-                    Translator::getInstance()->trans("Your cart is still waiting for you !", [], self::DOMAIN_NAME, $locale)
-                );
-
-                $message->setSubject(
-                    Translator::getInstance()->trans("Your cart is still waiting for you !", [], self::DOMAIN_NAME, $locale)
-                );
+    public function postActivation(?ConnectionInterface $con = null): void
+    {
+        foreach (self::CONFIGURATION_DEFAULTS as $key => $value) {
+            if (null === self::getConfigValue($key)) {
+                self::setConfigValue($key, $value);
             }
-
-            $message->save();
         }
 
-        if (null === MessageQuery::create()->findOneByName(self::REMINDER_MESSAGE_2)) {
-            $message = new Message();
-            $message
-                ->setName(self::REMINDER_MESSAGE_2)
-                ->setHtmlLayoutFileName('')
-                ->setHtmlTemplateFileName('reminder-mail-2.html')
-                ->setTextLayoutFileName('')
-                ->setTextTemplateFileName('reminder-mail-2.txt');
-
-            $languages = LangQuery::create()->find();
-
-            foreach ($languages as $language) {
-                /** @var Lang $language */
-                $locale = $language->getLocale();
-
-                $message->setLocale($locale);
-
-                $message->setTitle(
-                    Translator::getInstance()->trans('Second reminder : Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
-                );
-
-                $message->setSubject(
-                    Translator::getInstance()->trans('Second reminder : Your cart is still waiting for you !', [], self::DOMAIN_NAME, $locale)
-                );
-            }
-
-            $message->save();
+        foreach (self::REMINDER_MESSAGES as $reminderNumber => $messageCode) {
+            $this->seedMessage($messageCode, $reminderNumber);
         }
     }
 
-    /**
-     * @param ServicesConfigurator $servicesConfigurator
-     * @return void
-     */
+    private function seedMessage(string $messageCode, int $reminderNumber): void
+    {
+        if (null !== MessageQuery::create()->findOneByName($messageCode)) {
+            return;
+        }
+
+        $message = new Message();
+        $message
+            ->setName($messageCode)
+            ->setHtmlLayoutFileName('')
+            ->setHtmlTemplateFileName("reminder-mail-$reminderNumber.html.twig")
+            ->setTextLayoutFileName('')
+            ->setTextTemplateFileName("reminder-mail-$reminderNumber.txt.twig");
+
+        $subject = self::REMINDER_SUBJECTS[$reminderNumber];
+
+        foreach (LangQuery::create()->find() as $language) {
+            $locale = $language->getLocale();
+
+            $message->setLocale($locale);
+            $message->setTitle(Translator::getInstance()->trans($subject, [], self::DOMAIN_NAME, $locale));
+            $message->setSubject(Translator::getInstance()->trans($subject, [], self::DOMAIN_NAME, $locale));
+        }
+
+        $message->save();
+    }
+
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude([
+                __DIR__.'/I18n/*',
+                __DIR__.'/Config/**/*.php',
+                __DIR__.'/Model/*',
+                __DIR__.'/Domain/Exception/*',
+                __DIR__.'/Domain/Report/*',
+                __DIR__.'/Tests/*',
+                __DIR__.'/AbandonedCartReminder.php',
+            ])
             ->autowire(true)
             ->autoconfigure(true);
     }

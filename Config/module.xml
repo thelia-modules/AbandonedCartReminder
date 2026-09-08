@@ -5,15 +5,19 @@
     <fullnamespace>AbandonedCartReminder\AbandonedCartReminder</fullnamespace>
     <descriptive locale="en_US">
         <title>Abandoned Carts Reminder</title>
+        <description>Detects carts left behind, mails up to three reminders carrying a signed link
+            back to the cart, and reports what those reminders brought back.</description>
     </descriptive>
     <descriptive locale="fr_FR">
         <title>Rappel des Paniers Abandonnés</title>
+        <description>Détecte les paniers laissés en plan, envoie jusqu'à trois relances portant un
+            lien signé qui ramène au panier, et rapporte ce que ces relances ont fait revenir.</description>
     </descriptive>
     <languages>
         <language>en_US</language>
         <language>fr_FR</language>
     </languages>
-    <version>1.0.3</version>
+    <version>2.0.0</version>
     <authors>
         <author>
             <name>Franck Allimant</name>
@@ -27,8 +31,16 @@
             <email>ecarnez@openstudio.fr</email>
             <website>openstudio.fr</website>
         </author>
+        <author>
+            <name>Nicolas Barbey</name>
+            <company>OpenStudio</company>
+            <email>nbarbey@openstudio.fr</email>
+            <website>openstudio.fr</website>
+        </author>
     </authors>
     <type>classic</type>
-    <thelia>2.5.0</thelia>
+    <thelia>3.0.0</thelia>
     <stability>prod</stability>
+    <mandatory>0</mandatory>
+    <hidden>0</hidden>
 </module>

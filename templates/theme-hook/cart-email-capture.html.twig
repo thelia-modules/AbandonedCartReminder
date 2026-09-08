@@ -1,0 +1,7 @@
+<form method="post" action="{{ thelia_url('/cart-reminder/remember-me') }}" class="acr-remember" data-testid="abandoned-cart-capture">
+    {{ form_widget(form._token) }}
+    <label for="acr-remember-email">{{ 'Leave your email and we will remind you of this cart'|abandoned_cart_reminder_trans }}</label>
+    <input type="email" id="acr-remember-email" name="{{ form.email.vars.full_name }}" required
+           placeholder="{{ 'you@example.com'|abandoned_cart_reminder_trans }}">
+    <button type="submit">{{ 'Remind me'|abandoned_cart_reminder_trans }}</button>
+</form>

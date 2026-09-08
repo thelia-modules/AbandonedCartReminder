@@ -1,3 +1,29 @@
 <?php
-return array(
-);
+
+return [
+    'Hello' => 'Hello',
+    'Reference' => 'Reference',
+    'Product' => 'Product',
+    'Quantity' => 'Quantity',
+    'Total' => 'Total',
+    'Complete my order' => 'Complete my order',
+    'See you soon,' => 'See you soon,',
+    'The %store% team.' => 'The %store% team.',
+    'Your cart is still waiting for you' => 'Your cart is still waiting for you',
+    'Your cart is still available' => 'Your cart is still available',
+    'Last chance to complete your order' => 'Last chance to complete your order',
+    'You left some items in your cart, and they are waiting for you.' => 'You left some items in your cart, and they are waiting for you.',
+    'The items you picked are still available, but maybe not for long.' => 'The items you picked are still available, but maybe not for long.',
+    'This is the last reminder about the cart you left behind.' => 'This is the last reminder about the cart you left behind.',
+    'Stop reminding me about my carts' => 'Stop reminding me about my carts',
+    'Your email address' => 'Your email address',
+    'Leave your email and we will remind you of this cart' => 'Leave your email and we will remind you of this cart',
+    'you@example.com' => 'you@example.com',
+    'Remind me' => 'Remind me',
+    'For your security, this cannot be done from a session opened by a cart reminder link. Please sign in with your password first.' => "For your security, this cannot be done from a session opened by a cart reminder link. Please sign in with your password first.",
+    'Reminders stopped' => 'Reminders stopped',
+    'You will not receive any more reminders about the carts you leave behind.' => 'You will not receive any more reminders about the carts you leave behind.',
+    'This link is no longer valid' => 'This link is no longer valid',
+    'This unsubscribe link is invalid or has already been used. Nothing has been changed.' => 'This unsubscribe link is invalid or has already been used. Nothing has been changed.',
+    'Back to the shop' => 'Back to the shop',
+];

@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database defaultIdMethod="native" name="TheliaMain"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+          xsi:noNamespaceSchemaLocation="../../../../vendor/thelia/propel/resources/xsd/database.xsd" >
 
     <table name="abandoned_cart" namespace="AbandonedCartReminder\Model">
         <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true" />
-        <column name="cart_id" required="true" type="INTEGER" />
-        <column name="email_client" size="255" type="VARCHAR" />
-        <column name="locale" size="5" type="VARCHAR" />
-        <column name="status" size="1" type="INTEGER" defaultValue="0" />
-        <column name="login_token" size="255" type="VARCHAR" />
-        <column name="last_update" type="TIMESTAMP"/>
+        <column name="cart_id" type="INTEGER" required="true" />
+        <column name="customer_id" type="INTEGER" />
+        <column name="email" type="VARCHAR" size="255" required="true" />
+        <column name="email_source" type="TINYINT" required="true" defaultValue="0" />
+        <column name="locale" type="VARCHAR" size="10" />
+        <column name="status" type="TINYINT" required="true" defaultValue="0" />
+        <column name="reminders_sent" type="TINYINT" required="true" defaultValue="0" />
+        <column name="last_reminder_at" type="TIMESTAMP" />
+        <column name="recovery_link_fingerprint" type="VARCHAR" size="64" />
+        <column name="recovery_link_used_at" type="TIMESTAMP" />
+        <column name="recovered_order_id" type="INTEGER" />
 
         <foreign-key foreignTable="cart" name="fk_abandoned_cart_cart_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference foreign="id" local="cart_id" />
         </foreign-key>
+
+        <foreign-key foreignTable="customer" name="fk_abandoned_cart_customer_id" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference foreign="id" local="customer_id" />
+        </foreign-key>
+
+        <foreign-key foreignTable="order" name="fk_abandoned_cart_recovered_order_id" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference foreign="id" local="recovered_order_id" />
+        </foreign-key>
+
+        <unique name="abandoned_cart_cart_id_unique">
+            <unique-column name="cart_id" />
+        </unique>
+
+        <index name="idx_abandoned_cart_status_last_reminder">
+            <index-column name="status" />
+            <index-column name="last_reminder_at" />
+        </index>
+
+        <behavior name="timestampable" />
+    </table>
+
+    <table name="abandoned_cart_reminder_opt_out" namespace="AbandonedCartReminder\Model">
+        <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true" />
+        <column name="email" type="VARCHAR" size="255" required="true" />
+
+        <unique name="abandoned_cart_reminder_opt_out_email_unique">
+            <unique-column name="email" />
+        </unique>
+
+        <behavior name="timestampable" />
     </table>
 
     <external-schema filename="local/config/schema.xml" referenceOnly="true" />
