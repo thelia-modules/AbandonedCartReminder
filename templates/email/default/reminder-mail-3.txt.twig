@@ -1,0 +1,14 @@
+{{ 'Hello'|abandoned_cart_reminder_trans }},
+
+{{ 'This is the last reminder about the cart you left behind.'|abandoned_cart_reminder_trans }}
+
+{% for item in loop('reminder-items-text', 'abandoned-cart-item', {cart_id: cart_id}) %}
+- {{ item.QUANTITY }} x {{ item.TITLE }} ({{ item.REF }}) : {{ format_money(item.TOTAL_TAXED_PRICE, currency_id) }}
+{% endfor %}
+
+{{ 'Complete my order'|abandoned_cart_reminder_trans }} : {{ thelia_url('/back-to-cart/%token', {token: recovery_token}) }}
+
+{{ 'Stop reminding me about my carts'|abandoned_cart_reminder_trans }} : {{ thelia_url('/cart-reminder/unsubscribe/%token', {token: unsubscribe_token}) }}
+
+{{ 'See you soon,'|abandoned_cart_reminder_trans }}
+{{ 'The %store% team.'|abandoned_cart_reminder_trans({'%store%': config('store_name')}) }}

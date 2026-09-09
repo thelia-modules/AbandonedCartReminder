@@ -1,0 +1,152 @@
+{% set domain = 'abandonedcartreminder.bo.default-twig' %}
+{% form_theme form with bo_form_themes only %}
+
+{% if blocking %}
+    <div class="alert alert-danger" role="alert">{{ blocking }}</div>
+{% endif %}
+
+{% for warning in warnings %}
+    <div class="alert alert-warning" role="alert">{{ warning }}</div>
+{% endfor %}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">{{ 'Reminder settings'|trans({}, domain) }}</div>
+            <div class="card-body">
+                {{ form_start(form, {
+                    action: path('abandoned_cart_reminder.configuration.save'),
+                    method: 'post',
+                    attr: { 'data-testid': 'abandoned-cart-reminder-form' },
+                }) }}
+                    {{ form_row(form.first_reminder_delay_in_hours) }}
+                    {{ form_row(form.second_reminder_delay_in_hours) }}
+                    {{ form_row(form.third_reminder_delay_in_hours) }}
+                    {{ form_row(form.recovery_link_lifetime_in_seconds) }}
+                    {{ form_row(form.reminders_per_run) }}
+                    <p class="text-body-secondary small mb-3">
+                        {{ 'A delay left empty disables that reminder and stops the chain there. A delay of zero makes it due at once.'|trans({}, domain) }}
+                    </p>
+                    <button type="submit" class="btn btn-primary">{{ 'Save'|trans({}, domain) }}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">{{ 'What the reminders brought back'|trans({}, domain) }}</div>
+            <div class="card-body">
+                <p class="fs-3 mb-1">{{ recovered_total }}</p>
+                <p class="text-body-secondary mb-3">{{ 'Total of the orders placed after a reminder'|trans({}, domain) }}</p>
+                <p class="mb-1">{{ followed }} {{ 'cart(s) still followed'|trans({}, domain) }}</p>
+                <p class="text-body-secondary small mb-0">
+                    {{ 'A cart deleted by the maintenance purge leaves this list with its history, so the figure covers the retention window of carts without an order.'|trans({}, domain) }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% set list_url = path('admin.module.configure', { module_code: module_code }) %}
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <span>
+            {{ 'Followed carts'|trans({}, domain) }}
+            {% if filters.search %}
+                <span class="text-body-secondary">— {{ matching }} {{ 'match(es)'|trans({}, domain) }}</span>
+            {% endif %}
+        </span>
+        <form method="get" action="{{ list_url }}" class="d-flex gap-2" role="search">
+            <input type="hidden" name="order" value="{{ filters.sortField }}">
+            <input type="hidden" name="direction" value="{{ filters.direction }}">
+            <label for="acr-search" class="visually-hidden">{{ 'Search a customer'|trans({}, domain) }}</label>
+            <input type="search" id="acr-search" name="search" value="{{ filters.search }}"
+                   class="form-control form-control-sm" style="min-width: 16rem"
+                   placeholder="{{ 'Name or email'|trans({}, domain) }}"
+                   data-testid="abandoned-cart-search">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">{{ 'Search'|trans({}, domain) }}</button>
+            {% if filters.search %}
+                <a href="{{ list_url }}" class="btn btn-sm btn-link">{{ 'Clear'|trans({}, domain) }}</a>
+            {% endif %}
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+{% macro sortable(list_url, filters, field, label, align) %}
+    {% set params = { order: field, direction: filters.directionForColumn(field) } %}
+    {% if filters.search %}{% set params = params|merge({ search: filters.search }) %}{% endif %}
+    {% set active = filters.sortField == field %}
+    <th scope="col" class="text-{{ align|default('start') }}"{{ active ? ' aria-sort="' ~ (filters.direction == 'asc' ? 'ascending' : 'descending') ~ '"' : '' }}>
+        <a class="text-decoration-none text-reset d-inline-flex align-items-center gap-1"
+           href="{{ list_url }}?{{ params|url_encode }}"
+           data-testid="abandoned-cart-sort-{{ field }}">
+            {{ label }}
+            <i class="bi {{ active ? (filters.direction == 'asc' ? 'bi-sort-up' : 'bi-sort-down') : 'bi-arrow-down-up text-muted' }}" aria-hidden="true"></i>
+        </a>
+    </th>
+{% endmacro %}
+
+                <tr>
+                    {{ _self.sortable(list_url, filters, 'customer', 'Customer'|trans({}, domain)) }}
+                    {{ _self.sortable(list_url, filters, 'cart', 'Cart'|trans({}, domain)) }}
+                    {{ _self.sortable(list_url, filters, 'state', 'State'|trans({}, domain)) }}
+                    {{ _self.sortable(list_url, filters, 'reminders', 'Reminders sent'|trans({}, domain), 'center') }}
+                    {{ _self.sortable(list_url, filters, 'last_reminder', 'Last reminder'|trans({}, domain)) }}
+                    <th scope="col" class="text-end">{{ 'Recovered'|trans({}, domain) }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.email }}</td>
+                        <td>#{{ row.cart_id }}</td>
+                        <td>
+                            {% if row.status == 2 %}
+                                <span class="badge text-bg-success">{{ 'Recovered'|trans({}, domain) }}</span>
+                            {% elseif row.status == 3 %}
+                                <span class="badge text-bg-secondary">{{ 'Done'|trans({}, domain) }}</span>
+                            {% elseif row.status == 1 %}
+                                <span class="badge text-bg-info">{{ 'Reminded'|trans({}, domain) }}</span>
+                            {% else %}
+                                <span class="badge text-bg-light">{{ 'Waiting'|trans({}, domain) }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ row.reminders_sent }}</td>
+                        <td>{{ row.last_reminder_at ? row.last_reminder_at|format_datetime('short', 'short') : '—' }}</td>
+                        <td class="text-end">
+                            {% if row.recovered_amount is not null %}
+                                {{ format_money(row.recovered_amount, row.currency_id) }}
+                                {% if row.order_ref %}<span class="text-body-secondary small d-block">{{ row.order_ref }}</span>{% endif %}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-body-secondary py-4">
+                            {{ filters.search
+                                ? 'No followed cart matches this search.'|trans({}, domain)
+                                : 'No cart is being followed yet.'|trans({}, domain) }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if pages > 1 %}
+        <div class="card-footer">
+            {{ component('BoPagination', {
+                route: 'admin.module.configure',
+                currentPage: current_page,
+                lastPage: pages,
+                routeParams: { module_code: module_code }|merge(filters.asLinkParameters()),
+                spacing: '',
+                ariaLabel: 'Followed carts pagination',
+            }) }}
+        </div>
+    {% endif %}
+</div>

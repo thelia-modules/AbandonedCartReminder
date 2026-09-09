@@ -1,127 +1,43 @@
 <?php
-/*************************************************************************************/
-/*      This file is part of the Thelia package.                                     */
-/*                                                                                   */
-/*      Copyright (c) OpenStudio                                                     */
-/*      email : dev@thelia.net                                                       */
-/*      web : http://www.thelia.net                                                  */
-/*                                                                                   */
-/*      For the full copyright and license information, please view the LICENSE.txt  */
-/*      file that was distributed with this source code.                             */
-/*************************************************************************************/
+
+declare(strict_types=1);
 
 namespace AbandonedCartReminder\Form;
 
 use AbandonedCartReminder\AbandonedCartReminder;
-use Propel\Runtime\ActiveQuery\Criteria;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Form\BaseForm;
-use Thelia\Model\Coupon;
-use Thelia\Model\CouponQuery;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ConfigurationForm extends BaseForm
 {
-    /**
-     * @return void
-     */
     protected function buildForm(): void
     {
-        $locale = $this->getRequest()->getSession()?->getLang()->getLocale();
-
-        $promoCodeList = [ '' => $this->translator->trans("Do not offer any promotional code", [], AbandonedCartReminder::DOMAIN_NAME) ];
-
-        $coupons = CouponQuery::create()
-            ->orderByCode()
-            ->filterByExpirationDate(new \DateTime(), Criteria::GREATER_THAN)
-            ->find();
-
-        /** @var Coupon $coupon */
-        foreach ($coupons as $coupon) {
-            $code = $coupon->getCode();
-            $promoCodeList[$code] = $code . ': ' . $coupon->setLocale($locale)->getTitle();
-        }
-
         $this->formBuilder
-            ->add(
-                AbandonedCartReminder::REMINDER_TIME_1,
-                NumberType::class,
-                [
-                    "required" => true,
-                    "constraints" => [
-                        new NotBlank(),
-                        new GreaterThanOrEqual(array('value' => 0))
-                    ],
-                    "label" => $this->translator->trans('Time in minute before sending the first reminder', [], AbandonedCartReminder::DOMAIN_NAME),
-                    'label_attr'  => [
-                        'help' => $this->translator->trans(
-                            'Number of minutes to wait when the cart becomes inactive before sending the first email.',
-                            [],
-                            AbandonedCartReminder::DOMAIN_NAME
-                        ),
-                    ],
-                ]
-            )
-            ->add(
-                AbandonedCartReminder::REMINDER_TIME_2,
-                NumberType::class,
-                [
-                    "required" => true,
-                    "constraints" => [
-                        new NotBlank(),
-                        new GreaterThanOrEqual(array('value' => 0))
-                    ],
-                    "label" => $this->translator->trans('Time in minute before sending the second reminder', [], AbandonedCartReminder::DOMAIN_NAME),
-                    'label_attr'  => [
-                        'help' => $this->translator->trans(
-                            'Number of minutes to wait when the cart becomes inactive before sending the second email.',
-                            [],
-                            AbandonedCartReminder::DOMAIN_NAME
-                        ),
-                    ],
-                ]
-            )
-            ->add(
-                AbandonedCartReminder::PROMO_CODE_REMINDER,
-                ChoiceType::class,
-                [
-                    'required' => false,
-                    "choices" => $promoCodeList,
-                    "label" => $this->translator->trans('Promotional code to offer while sending the second reminder', [], AbandonedCartReminder::DOMAIN_NAME),
-                    'label_attr'  => [
-                        'help' => $this->translator->trans(
-                            'You can specify if you want an existing promotional code.',
-                            [],
-                            AbandonedCartReminder::DOMAIN_NAME
-                        ),
-                    ],
-                ]
-            )
-            ->add(
-                AbandonedCartReminder::CONFIG_NAME_URL_TRACKING_ARGUMENTS,
-                TextType::class,
-                [
-                    "required" => false,
-                    "label" => $this->translator->trans('URL tracking arguments', [], AbandonedCartReminder::DOMAIN_NAME),
-                    'label_attr'  => [
-                        'help' => $this->translator->trans(
-                            'Arguments to add to the URL of the "Finalize my order" button. Please start with ?',
-                            [],
-                            AbandonedCartReminder::DOMAIN_NAME
-                        ),
-                    ],
-                ]
-            )
-        ;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getName(): string {
-        return 'abandoned_cart_reminder_configuration_form';
+            ->add(AbandonedCartReminder::FIRST_REMINDER_DELAY_IN_HOURS, IntegerType::class, [
+                'required' => false,
+                'label' => $this->translator->trans('Hours of inactivity before the first reminder', [], AbandonedCartReminder::DOMAIN_NAME),
+                'constraints' => [new GreaterThanOrEqual(value: 0)],
+            ])
+            ->add(AbandonedCartReminder::SECOND_REMINDER_DELAY_IN_HOURS, IntegerType::class, [
+                'required' => false,
+                'label' => $this->translator->trans('Hours after the first reminder before the second', [], AbandonedCartReminder::DOMAIN_NAME),
+                'constraints' => [new GreaterThanOrEqual(value: 0)],
+            ])
+            ->add(AbandonedCartReminder::THIRD_REMINDER_DELAY_IN_HOURS, IntegerType::class, [
+                'required' => false,
+                'label' => $this->translator->trans('Hours after the second reminder before the third', [], AbandonedCartReminder::DOMAIN_NAME),
+                'constraints' => [new GreaterThanOrEqual(value: 0)],
+            ])
+            ->add(AbandonedCartReminder::RECOVERY_LINK_LIFETIME_IN_SECONDS, IntegerType::class, [
+                'required' => false,
+                'label' => $this->translator->trans('How long a recovery link stays valid, in seconds', [], AbandonedCartReminder::DOMAIN_NAME),
+                'constraints' => [new GreaterThanOrEqual(value: 60)],
+            ])
+            ->add(AbandonedCartReminder::REMINDERS_PER_RUN, IntegerType::class, [
+                'required' => false,
+                'label' => $this->translator->trans('How many reminders one run may send at most', [], AbandonedCartReminder::DOMAIN_NAME),
+                'constraints' => [new GreaterThanOrEqual(value: 1)],
+            ]);
     }
 }
